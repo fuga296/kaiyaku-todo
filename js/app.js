@@ -111,8 +111,43 @@
   }
 
   // ---- 描画 ----
+  // 解約(1タップ。確認画面なし)
+  var justCanceled = false;
+
+  function cancelNow() {
+    var btn = document.getElementById('cancel-btn');
+    btn.disabled = true;
+    Payment.cancelSubscription({ subscriptionId: self && self.subscriptionId }).then(function () {
+      self = null;
+      try { localStorage.removeItem(KEY_SELF); } catch (e) { /* 何もしない */ }
+      justCanceled = true;
+      render();
+    });
+  }
+
+  function renderCancel() {
+    var box = document.getElementById('cancel-block');
+    var msg = document.getElementById('cancel-msg');
+    var body = document.getElementById('cancel-body');
+    if (self) {
+      box.hidden = false;
+      body.hidden = false;
+      msg.hidden = true;
+      justCanceled = false;
+    } else if (justCanceled) {
+      box.hidden = false;
+      body.hidden = true;
+      msg.hidden = false;
+    } else {
+      box.hidden = true;
+    }
+    document.getElementById('cancel-btn').disabled = false;
+  }
+  document.getElementById('cancel-btn').addEventListener('click', cancelNow);
+
   function render() {
     renderSlot();
+    renderCancel();
     var total = list().reduce(function (s, it) { return s + monthlyPrice(it); }, 0);
 
     document.getElementById('sum-count').textContent = list().length + ' 件';
@@ -154,23 +189,17 @@
       cell(tr, 'num', dec.format(it.usage) + ' 回 / ' + UNIT_LABEL[it.usageUnit]);
       cell(tr, 'num', dec.format(monthlyUsage(it)) + ' 回');
       var td = el('td', 'num');
-      var b = el('button', 'btn-text', '削除');
-      b.type = 'button';
-      b.setAttribute('aria-label', it.name + ' を削除');
-      b.addEventListener('click', function () {
-        if (it.id === 'self') {
-          Payment.cancelSubscription({ subscriptionId: self.subscriptionId }).then(function () {
-            self = null;
-            try { localStorage.removeItem(KEY_SELF); } catch (e) { /* 何もしない */ }
-            render();
-          });
-          return;
-        }
-        items = items.filter(function (x) { return x.id !== it.id; });
-        save(KEY_ITEMS, items);
-        render();
-      });
-      td.appendChild(b);
+      if (it.id !== 'self') {
+        var b = el('button', 'btn-text', '削除');
+        b.type = 'button';
+        b.setAttribute('aria-label', it.name + ' を削除');
+        b.addEventListener('click', function () {
+          items = items.filter(function (x) { return x.id !== it.id; });
+          save(KEY_ITEMS, items);
+          render();
+        });
+        td.appendChild(b);
+      }
       tr.appendChild(td);
       tb.appendChild(tr);
     });

@@ -169,6 +169,17 @@ td.empty.ok { color: var(--main); font-weight: 700; }
 tr.zero td.num.key { color: #a3341f; font-weight: 700; }
 td.num.key { font-weight: 700; }
 
+/* 解約ブロック */
+.block.cancel { border-top-color: var(--main); border-top-width: 3px; }
+.cancel-body { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+[hidden] { display: none !important; }
+.cancel-plan { margin: 0; font-size: 16px; font-weight: 700; flex: 1 1 14em; }
+.cancel-plan span { margin-left: 12px; font-weight: 400; color: var(--ink-sub); font-size: 14px; }
+.btn-big { height: 56px; padding: 0 48px; font-size: 18px; }
+.cancel-body .note { margin: 0; flex-basis: 100%; }
+.cancel-msg { margin: 0; font-size: 16px; font-weight: 700; color: var(--main); }
+@media (max-width: 720px) { .btn-big { width: 100%; } }
+
 /* 契約ページ */
 .wrap.narrow { max-width: 640px; }
 .plan-table th { width: 6em; font-size: 13px; color: var(--ink-sub); font-weight: 400; border-top: 1px solid var(--rule); }
