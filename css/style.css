@@ -45,7 +45,15 @@ body {
   margin: 0 auto;
   padding: 12px 16px;
   border-bottom: 3px solid var(--main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
+.head-slot { display: flex; align-items: center; }
+.head-slot .btn { display: inline-flex; align-items: center; text-decoration: none; }
+.head-slot .status { font-size: 14px; color: var(--main); font-weight: 700; }
+.head-slot .back { font-size: 14px; }
 .brand {
   margin: 0;
   font-size: 18px;
@@ -160,6 +168,19 @@ td.empty { color: var(--ink-sub); padding: 14px 10px; }
 td.empty.ok { color: var(--main); font-weight: 700; }
 tr.zero td.num.key { color: #a3341f; font-weight: 700; }
 td.num.key { font-weight: 700; }
+
+/* 契約ページ */
+.wrap.narrow { max-width: 640px; }
+.plan-table th { width: 6em; font-size: 13px; color: var(--ink-sub); font-weight: 400; border-top: 1px solid var(--rule); }
+.plan-table td { border-top: 1px solid var(--rule); }
+.plan-form { margin-top: 20px; }
+.plan-form .f { max-width: 360px; }
+.plan-form .note { margin: 12px 0 8px; }
+.actions { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+.actions .btn-text { font-size: 14px; }
+.error { color: #a3341f; font-size: 14px; }
+.btn[href] { display: inline-flex; align-items: center; text-decoration: none; }
+.btn:disabled { opacity: .6; cursor: default; }
 
 /* 下部 */
 .site-footer {

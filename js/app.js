@@ -8,6 +8,7 @@
 
   var KEY_ITEMS = 'kaiyaku.items.v1';
   var KEY_CAP = 'kaiyaku.cap.v1';
+  var KEY_SELF = 'kaiyaku.self.v1'; // このサービス自身の契約(plan.js が書く)
 
   // 例の契約(初回だけ入る。名前の頭に「例:」を付けている)
   var SAMPLE = [
@@ -33,6 +34,36 @@
   }
   var cap = load(KEY_CAP);
   if (typeof cap !== 'number') cap = null;
+
+  // このサービス自身の契約(契約した場合だけ、契約一覧に1件入る)
+  var self = load(KEY_SELF);
+  if (!self || typeof self.usage !== 'number') self = null;
+
+  function list() {
+    if (!self) return items;
+    return items.concat([{
+      id: 'self',
+      name: Payment.PLAN.name,
+      price: Payment.PLAN.price,
+      priceUnit: Payment.PLAN.period,
+      usage: self.usage,
+      usageUnit: self.usageUnit
+    }]);
+  }
+
+  // 上部のボタン(契約前だけ「グレードアップ」、契約後は表示だけ)
+  function renderSlot() {
+    var slot = document.getElementById('upgrade-slot');
+    if (!slot) return;
+    slot.textContent = '';
+    if (self) {
+      slot.appendChild(el('span', 'status', 'ご契約中'));
+    } else {
+      var a = el('a', 'btn', 'グレードアップ');
+      a.href = 'plan.html';
+      slot.appendChild(a);
+    }
+  }
 
   // ---- 計算 ----
   function monthlyPrice(it) { return it.price * DAYS.month / DAYS[it.priceUnit]; }
@@ -81,9 +112,10 @@
 
   // ---- 描画 ----
   function render() {
-    var total = items.reduce(function (s, it) { return s + monthlyPrice(it); }, 0);
+    renderSlot();
+    var total = list().reduce(function (s, it) { return s + monthlyPrice(it); }, 0);
 
-    document.getElementById('sum-count').textContent = items.length + ' 件';
+    document.getElementById('sum-count').textContent = list().length + ' 件';
     document.getElementById('sum-total').textContent = fmtYen(total);
     var diff = document.getElementById('sum-diff');
     diff.className = '';
@@ -113,8 +145,8 @@
       { label: '月の回数に直すと', num: true },
       { label: '' }
     ]);
-    if (!items.length) { emptyRow(tb, 6, '契約が登録されていません。'); return; }
-    items.forEach(function (it) {
+    if (!list().length) { emptyRow(tb, 6, '契約が登録されていません。'); return; }
+    list().forEach(function (it) {
       var tr = el('tr');
       cell(tr, 'name', it.name);
       cell(tr, 'num', yen.format(it.price) + ' 円 / ' + UNIT_LABEL[it.priceUnit]);
@@ -126,6 +158,14 @@
       b.type = 'button';
       b.setAttribute('aria-label', it.name + ' を削除');
       b.addEventListener('click', function () {
+        if (it.id === 'self') {
+          Payment.cancelSubscription({ subscriptionId: self.subscriptionId }).then(function () {
+            self = null;
+            try { localStorage.removeItem(KEY_SELF); } catch (e) { /* 何もしない */ }
+            render();
+          });
+          return;
+        }
         items = items.filter(function (x) { return x.id !== it.id; });
         save(KEY_ITEMS, items);
         render();
@@ -156,7 +196,7 @@
       return;
     }
     note.textContent = '月額の高い順に、解約すると合計が上限(' + fmtYen(cap) + ')以下になるところまでを表示しています。';
-    var sorted = items.slice().sort(byNumberDesc(monthlyPrice));
+    var sorted = list().slice().sort(byNumberDesc(monthlyPrice));
     var remain = total;
     for (var i = 0; i < sorted.length; i++) {
       remain -= monthlyPrice(sorted[i]);
@@ -179,8 +219,8 @@
       { label: '月額', num: true },
       { label: '月の回数', num: true }
     ]);
-    if (!items.length) { emptyRow(tb, 5, '契約が登録されていません。'); return; }
-    var sorted = items.slice().sort(byNumberDesc(perUse, byNumberDesc(monthlyPrice)));
+    if (!list().length) { emptyRow(tb, 5, '契約が登録されていません。'); return; }
+    var sorted = list().slice().sort(byNumberDesc(perUse, byNumberDesc(monthlyPrice)));
     sorted.forEach(function (it, i) {
       var zero = monthlyUsage(it) === 0;
       var tr = el('tr', zero ? 'zero' : '');
@@ -201,8 +241,8 @@
       { label: '月の回数', num: true },
       { label: '月額', num: true }
     ]);
-    if (!items.length) { emptyRow(tb, 4, '契約が登録されていません。'); return; }
-    var sorted = items.slice().sort(function (a, b) {
+    if (!list().length) { emptyRow(tb, 4, '契約が登録されていません。'); return; }
+    var sorted = list().slice().sort(function (a, b) {
       var x = monthlyUsage(a), y = monthlyUsage(b);
       if (x !== y) return x - y;
       return monthlyPrice(b) - monthlyPrice(a);
