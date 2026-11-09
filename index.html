@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>サブスク管理(仮称)</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="mock-bar" role="note">これは模擬です。実際の決済・課金は行われません。</div>
+  <div class="head-main">
+    <h1 class="brand">サブスク管理<span class="tentative">(仮称)</span></h1>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="block" aria-labelledby="h-summary">
+    <h2 id="h-summary">ご利用状況</h2>
+    <div class="summary">
+      <dl class="figure">
+        <dt>契約数</dt>
+        <dd id="sum-count">0 件</dd>
+      </dl>
+      <dl class="figure">
+        <dt>月あたりの合計</dt>
+        <dd id="sum-total">0 円</dd>
+      </dl>
+      <dl class="figure">
+        <dt>月の上限</dt>
+        <dd>
+          <label class="cap-field">
+            <input id="cap" type="number" min="0" step="1" inputmode="numeric" placeholder="未入力">
+            <span>円</span>
+          </label>
+        </dd>
+      </dl>
+      <dl class="figure">
+        <dt>上限との差</dt>
+        <dd id="sum-diff">-</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-add">
+    <h2 id="h-add">契約の追加</h2>
+    <form id="add-form" class="add-form" autocomplete="off">
+      <label class="f f-name">
+        <span>契約名</span>
+        <input id="in-name" type="text" required maxlength="40">
+      </label>
+      <fieldset class="f f-price">
+        <legend>料金</legend>
+        <div class="pair">
+          <input id="in-price" type="number" min="1" step="1" inputmode="numeric" required aria-label="料金(円)">
+          <span class="unit">円 /</span>
+          <select id="in-price-unit" aria-label="料金の期間">
+            <option value="week">週</option>
+            <option value="month" selected>月</option>
+            <option value="year">年</option>
+          </select>
+        </div>
+      </fieldset>
+      <fieldset class="f f-usage">
+        <legend>利用回数</legend>
+        <div class="pair">
+          <input id="in-usage" type="number" min="0" step="any" inputmode="decimal" required aria-label="利用回数">
+          <span class="unit">回 /</span>
+          <select id="in-usage-unit" aria-label="利用回数の期間">
+            <option value="week">週</option>
+            <option value="month" selected>月</option>
+            <option value="year">年</option>
+          </select>
+        </div>
+      </fieldset>
+      <button class="btn" type="submit">追加する</button>
+    </form>
+  </section>
+
+  <section class="block" aria-labelledby="h-all">
+    <h2 id="h-all">契約一覧</h2>
+    <div class="table-scroll"><table id="t-all"></table></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-l1">
+    <h2 id="h-l1">合計が高い順</h2>
+    <p class="note" id="note-l1"></p>
+    <div class="table-scroll"><table id="t-l1"></table></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-l2">
+    <h2 id="h-l2">1回あたりの金額が高い順</h2>
+    <p class="note">月額を月の利用回数で割った金額です。利用回数が0のものは最上位に出します。</p>
+    <div class="table-scroll"><table id="t-l2"></table></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-l3">
+    <h2 id="h-l3">使っていない順</h2>
+    <p class="note">月の利用回数が少ない順です。</p>
+    <div class="table-scroll"><table id="t-l3"></table></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>これは模擬です。実際の決済・課金は行われません。入力した内容はこのブラウザの中にだけ保存されます。</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

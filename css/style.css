@@ -1,0 +1,186 @@
+:root {
+  --paper: #f6f7f6;
+  --sheet: #ffffff;
+  --ink: #1c211f;
+  --ink-sub: #565e5a;
+  --rule: #d3d8d5;
+  --rule-strong: #1c211f;
+  --main: #12805a;        /* メインカラー: 深いが明るめの緑 */
+  --main-tint: #e6f2ec;
+  --mock-bg: #1c211f;
+  --mock-ink: #f6f7f6;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+/* 上部 */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--sheet);
+  border-bottom: 1px solid var(--rule);
+}
+.mock-bar {
+  background: var(--mock-bg);
+  color: var(--mock-ink);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 6px 16px;
+  text-align: center;
+}
+.head-main {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  border-bottom: 3px solid var(--main);
+}
+.brand {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+.tentative { font-weight: 400; color: var(--ink-sub); font-size: 14px; margin-left: 4px; }
+
+/* 本体 */
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+.block {
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--rule-strong);
+  padding: 16px 20px 20px;
+  margin-bottom: 24px;
+}
+.block h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.note { margin: -4px 0 12px; font-size: 13px; color: var(--ink-sub); line-height: 1.7; }
+
+/* 概要 */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.figure { margin: 0; padding: 12px 16px; border-left: 1px solid var(--rule); }
+.figure:first-child { border-left: 0; padding-left: 0; }
+.figure dt { font-size: 12px; color: var(--ink-sub); line-height: 1.5; }
+.figure dd { margin: 4px 0 0; font-size: 22px; line-height: 1.4; font-variant-numeric: tabular-nums; font-weight: 700; }
+.figure dd.over { color: #a3341f; }
+.figure dd.ok { color: var(--main); }
+.cap-field { display: flex; align-items: baseline; gap: 6px; font-size: 16px; font-weight: 400; }
+.cap-field input { width: 8em; }
+
+/* 入力 */
+input, select, button { font: inherit; color: inherit; }
+input[type="text"], input[type="number"], select {
+  height: 38px;
+  border: 1px solid #8a928e;
+  border-radius: 2px;
+  background: var(--sheet);
+  padding: 0 10px;
+  font-variant-numeric: tabular-nums;
+}
+input:focus-visible, select:focus-visible, button:focus-visible {
+  outline: 2px solid var(--main);
+  outline-offset: 1px;
+}
+.add-form {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr auto;
+  gap: 12px 16px;
+  align-items: end;
+}
+.f { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.f > span, .f > legend { font-size: 12px; color: var(--ink-sub); line-height: 1.5; padding: 0; }
+.f input[type="text"] { width: 100%; }
+.pair { display: flex; align-items: center; gap: 6px; }
+.pair input { width: 100%; min-width: 0; }
+.pair .unit { white-space: nowrap; font-size: 14px; }
+.btn {
+  height: 38px;
+  padding: 0 20px;
+  background: var(--main);
+  color: #fff;
+  border: 1px solid var(--main);
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.btn:hover { background: #0e6a4a; border-color: #0e6a4a; }
+.btn-text {
+  background: none;
+  border: 0;
+  padding: 2px 4px;
+  color: var(--ink-sub);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+}
+.btn-text:hover { color: #a3341f; }
+
+/* 表 */
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+caption { display: none; }
+th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--rule); line-height: 1.5; vertical-align: baseline; }
+thead th {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule-strong);
+  white-space: nowrap;
+}
+th.num, td.num { text-align: right; white-space: nowrap; }
+td.rank { width: 2.5em; color: var(--ink-sub); }
+td.name { min-width: 8em; }
+td.empty { color: var(--ink-sub); padding: 14px 10px; }
+td.empty.ok { color: var(--main); font-weight: 700; }
+tr.zero td.num.key { color: #a3341f; font-weight: 700; }
+td.num.key { font-weight: 700; }
+
+/* 下部 */
+.site-footer {
+  border-top: 1px solid var(--rule);
+  background: var(--sheet);
+  padding: 16px;
+  font-size: 13px;
+  color: var(--ink-sub);
+  text-align: center;
+}
+.site-footer p { margin: 0 auto; max-width: 1040px; }
+
+/* スマホ幅 */
+@media (max-width: 720px) {
+  .wrap { padding: 16px 16px 32px; }
+  .block { padding: 14px 14px 16px; }
+  .summary { grid-template-columns: 1fr 1fr; }
+  .figure { border-left: 0; border-top: 1px solid var(--rule); padding: 10px 0; }
+  .figure:nth-child(-n+2) { border-top: 0; }
+  .figure:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--rule); }
+  .add-form { grid-template-columns: 1fr; }
+  .btn { width: 100%; }
+  th, td { padding: 8px 6px; }
+}
