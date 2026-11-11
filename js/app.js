@@ -141,6 +141,7 @@
 
   function renderCancel() {
     var box = document.getElementById('cancel-block');
+    if (!box) return;
     var msg = document.getElementById('cancel-msg');
     var body = document.getElementById('cancel-body');
     if (self && !self.endsAt) {
@@ -156,25 +157,27 @@
     }
     document.getElementById('cancel-btn').disabled = false;
   }
-  document.getElementById('cancel-btn').addEventListener('click', cancelNow);
+  if (document.getElementById('cancel-btn')) document.getElementById('cancel-btn').addEventListener('click', cancelNow);
 
   function render() {
     renderSlot();
     renderCancel();
     var total = list().reduce(function (s, it) { return s + monthlyPrice(it); }, 0);
 
-    document.getElementById('sum-count').textContent = list().length + ' 件';
-    document.getElementById('sum-total').textContent = fmtYen(total);
-    var diff = document.getElementById('sum-diff');
-    diff.className = '';
-    if (cap == null) {
-      diff.textContent = '-';
-    } else if (total > cap) {
-      diff.textContent = fmtYen(total - cap) + ' 超過';
-      diff.className = 'over';
-    } else {
-      diff.textContent = '上限内';
-      diff.className = 'ok';
+    if (document.getElementById('sum-count')) {
+      document.getElementById('sum-count').textContent = list().length + ' 件';
+      document.getElementById('sum-total').textContent = fmtYen(total);
+      var diff = document.getElementById('sum-diff');
+      diff.className = '';
+      if (cap == null) {
+        diff.textContent = '-';
+      } else if (total > cap) {
+        diff.textContent = fmtYen(total - cap) + ' 超過';
+        diff.className = 'over';
+      } else {
+        diff.textContent = '上限内';
+        diff.className = 'ok';
+      }
     }
 
     renderAll();
@@ -185,6 +188,7 @@
 
   function renderAll() {
     var t = document.getElementById('t-all');
+    if (!t) return;
     var tb = head(t, [
       { label: '契約名' },
       { label: '料金', num: true },
@@ -221,6 +225,7 @@
   function renderL1(total) {
     var note = document.getElementById('note-l1');
     var t = document.getElementById('t-l1');
+    if (!t) return;
     var tb = head(t, [
       { label: '順位' },
       { label: '契約名' },
@@ -254,6 +259,7 @@
 
   function renderL2() {
     var t = document.getElementById('t-l2');
+    if (!t) return;
     var tb = head(t, [
       { label: '順位' },
       { label: '契約名' },
@@ -277,6 +283,7 @@
 
   function renderL3() {
     var t = document.getElementById('t-l3');
+    if (!t) return;
     var tb = head(t, [
       { label: '順位' },
       { label: '契約名' },
@@ -300,7 +307,8 @@
   }
 
   // ---- 入力 ----
-  document.getElementById('add-form').addEventListener('submit', function (e) {
+  var addForm = document.getElementById('add-form');
+  if (addForm) addForm.addEventListener('submit', function (e) {
     e.preventDefault();
     var name = document.getElementById('in-name').value.trim();
     var price = Number(document.getElementById('in-price').value);
@@ -317,12 +325,14 @@
     save(KEY_ITEMS, items);
     e.target.reset();
     document.getElementById('in-name').focus();
+    var done = document.getElementById('add-done');
+    if (done) { done.textContent = '「' + name + '」を追加しました。'; done.hidden = false; }
     render();
   });
 
   var capInput = document.getElementById('cap');
-  if (cap != null) capInput.value = cap;
-  capInput.addEventListener('input', function () {
+  if (capInput && cap != null) capInput.value = cap;
+  if (capInput) capInput.addEventListener('input', function () {
     var v = capInput.value.trim();
     cap = v === '' ? null : Math.max(0, Number(v));
     if (cap != null && isNaN(cap)) cap = null;
