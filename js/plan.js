@@ -13,7 +13,13 @@
   document.getElementById('plan-price').textContent =
     new Intl.NumberFormat('ja-JP').format(plan.price) + ' 円 / ' + UNIT_LABEL[plan.period];
 
-  if (load()) {
+  var cur = load();
+  if (cur) {
+    if (cur.endsAt) {
+      var d = new Date(cur.endsAt);
+      document.getElementById('already-text').textContent =
+        '解約済みです。' + (d.getMonth() + 1) + '月' + d.getDate() + '日まで利用できます。';
+    }
     document.getElementById('offer').hidden = true;
     document.getElementById('already').hidden = false;
     return;

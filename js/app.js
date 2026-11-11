@@ -38,18 +38,34 @@
   // このサービス自身の契約(契約した場合だけ、契約一覧に1件入る)
   var self = load(KEY_SELF);
   if (!self || typeof self.usage !== 'number') self = null;
+  // 解約済みで、利用できる期間(今月末)を過ぎていたら、一覧から消す
+  if (self && self.endsAt && Date.now() > self.endsAt) {
+    self = null;
+    try { localStorage.removeItem(KEY_SELF); } catch (e) { /* 何もしない */ }
+  }
 
-  function list() {
-    if (!self) return items;
-    return items.concat([{
+  function selfItem() {
+    return {
       id: 'self',
       name: Payment.PLAN.name,
       price: Payment.PLAN.price,
       priceUnit: Payment.PLAN.period,
       usage: self.usage,
-      usageUnit: self.usageUnit
-    }]);
+      usageUnit: self.usageUnit,
+      endsAt: self.endsAt || null
+    };
   }
+  // 合計と順位に使う契約(解約済みのこのサービスは含めない)
+  function list() {
+    return (self && !self.endsAt) ? items.concat([selfItem()]) : items;
+  }
+  // 契約一覧に出す契約(解約済みでも、今月末までは残す)
+  function listAll() {
+    return self ? items.concat([selfItem()]) : items;
+  }
+
+  function endOfMonth(d) { return new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999); }
+  function fmtDate(ms) { var d = new Date(ms); return (d.getMonth() + 1) + '月' + d.getDate() + '日'; }
 
   // 上部のボタン(契約前だけ「グレードアップ」、契約後は表示だけ)
   function renderSlot() {
@@ -57,7 +73,7 @@
     if (!slot) return;
     slot.textContent = '';
     if (self) {
-      slot.appendChild(el('span', 'status', 'ご契約中'));
+      slot.appendChild(el('span', 'status', self.endsAt ? '解約済み(' + fmtDate(self.endsAt) + 'まで利用できます)' : 'ご契約中'));
     } else {
       var a = el('a', 'btn', 'グレードアップ');
       a.href = 'plan.html';
@@ -112,15 +128,13 @@
 
   // ---- 描画 ----
   // 解約(1タップ。確認画面なし)
-  var justCanceled = false;
-
   function cancelNow() {
     var btn = document.getElementById('cancel-btn');
     btn.disabled = true;
     Payment.cancelSubscription({ subscriptionId: self && self.subscriptionId }).then(function () {
-      self = null;
-      try { localStorage.removeItem(KEY_SELF); } catch (e) { /* 何もしない */ }
-      justCanceled = true;
+      self.canceledAt = Date.now();
+      self.endsAt = endOfMonth(new Date()).getTime(); // 今月末まで利用できる
+      save(KEY_SELF, self);
       render();
     });
   }
@@ -129,12 +143,11 @@
     var box = document.getElementById('cancel-block');
     var msg = document.getElementById('cancel-msg');
     var body = document.getElementById('cancel-body');
-    if (self) {
+    if (self && !self.endsAt) {
       box.hidden = false;
       body.hidden = false;
       msg.hidden = true;
-      justCanceled = false;
-    } else if (justCanceled) {
+    } else if (self) {
       box.hidden = false;
       body.hidden = true;
       msg.hidden = false;
@@ -180,10 +193,10 @@
       { label: '月の回数に直すと', num: true },
       { label: '' }
     ]);
-    if (!list().length) { emptyRow(tb, 6, '契約が登録されていません。'); return; }
-    list().forEach(function (it) {
+    if (!listAll().length) { emptyRow(tb, 6, '契約が登録されていません。'); return; }
+    listAll().forEach(function (it) {
       var tr = el('tr');
-      cell(tr, 'name', it.name);
+      cell(tr, 'name', it.name + (it.endsAt ? '(解約済み・' + fmtDate(it.endsAt) + 'まで)' : ''));
       cell(tr, 'num', yen.format(it.price) + ' 円 / ' + UNIT_LABEL[it.priceUnit]);
       cell(tr, 'num', fmtYen(monthlyPrice(it)));
       cell(tr, 'num', dec.format(it.usage) + ' 回 / ' + UNIT_LABEL[it.usageUnit]);
