@@ -193,6 +193,14 @@ td.num.key { font-weight: 700; }
 .btn[href] { display: inline-flex; align-items: center; text-decoration: none; }
 .btn:disabled { opacity: .6; cursor: default; }
 
+/* 確認(契約ページ) */
+.confirm { margin-top: 20px; }
+.confirm-text { margin: 0 0 16px; font-size: 16px; font-weight: 700; line-height: 1.7; }
+.confirm .btn-big { display: inline-flex; align-items: center; }
+.confirm-sub { margin: 20px 0 0; }
+.confirm-sub .btn-text { font-size: 12px; color: var(--ink-sub); }
+@media (max-width: 720px) { .confirm .btn-big { width: 100%; justify-content: center; } }
+
 /* 下部 */
 .site-footer {
   border-top: 1px solid var(--rule);

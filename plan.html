@@ -48,13 +48,19 @@
             </select>
           </div>
         </fieldset>
-        <p class="note">カード番号などの入力はありません。ここで契約すると、契約状況の一覧にこのサービスが1件入ります。</p>
+        <p class="note">カード番号などの入力はありません。ここで契約すると、毎月自動で更新され、契約状況の一覧にこのサービスが1件入ります。</p>
         <div class="actions">
           <button class="btn" type="submit" id="submit">契約する(模擬)</button>
           <a class="btn-text" href="index.html">やめる</a>
         </div>
         <p class="error" id="error" role="alert" hidden></p>
       </form>
+
+      <div id="confirm" class="confirm" hidden>
+        <p class="confirm-text" id="confirm-text"></p>
+        <a class="btn btn-big" href="index.html">やめておく</a>
+        <p class="confirm-sub"><button class="btn-text" type="button" id="confirm-yes"></button></p>
+      </div>
     </div>
   </section>
 
